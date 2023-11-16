@@ -1,0 +1,23 @@
+from mininet.topo import Topo
+from mininet.net import Mininet
+from mininet.node import RemoteController
+import time
+
+class MyTopology(Topo):
+    def build(self):
+        # Voeg knopen en verbindingen toe aan de topologie
+        pass
+
+topo = MyTopology()
+net = Mininet(topo=topo, controller=lambda name: RemoteController(name, ip='127.0.0.1'))
+net.start()
+
+# Voeg een OpenFlow-regel toe
+switch = net.switches[0]
+switch.cmd('ovs-ofctl add-flow {} "priority=1, actions=OUTPUT:2"'.format(switch))
+
+# Wacht één uur voordat Mininet wordt gestopt
+time.sleep(3600)
+
+# Stop Mininet
+net.stop()
